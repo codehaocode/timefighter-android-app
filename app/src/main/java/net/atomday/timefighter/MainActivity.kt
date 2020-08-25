@@ -8,6 +8,9 @@ import android.widget.TextView
 import android.widget.Toast
 import android.util.Log
 import android.view.animation.AnimationUtils
+import androidx.appcompat.app.AlertDialog
+import android.view.Menu
+import android.view.MenuItem
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,13 +20,21 @@ class MainActivity : AppCompatActivity() {
     private lateinit var timeLeftTextView: TextView
     private lateinit var tapMeButton: Button
 
+    private var score = 0
+
     private var gameStarted = false
 
     private lateinit var countDownTimer: CountDownTimer
     private var initialCountDown: Long = 60000
     private var countDownInterval: Long = 1000
     private var timeLeft = 60
-    private var score = 0
+
+    companion object {
+        private const val SCORE_KEY = "SCORE_KEY"
+
+        private const val TIME_LEFT_KEY = "TIME_LEFT_KEY"
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +94,20 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onDestroy called.")
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.about_item) {
+            showInfo()
+        }
+        return true
+    }
+
+
     private fun incrementScore() {
         if (!gameStarted){
             startGame()
@@ -126,10 +151,14 @@ class MainActivity : AppCompatActivity() {
         resetGame()
     }
 
-    companion object {
-        private const val SCORE_KEY = "SCORE_KEY"
 
-        private const val TIME_LEFT_KEY = "TIME_LEFT_KEY"
-
+    private fun showInfo() {
+        val dialogTitle = getString(R.string.about_title, BuildConfig.VERSION_NAME)
+        val dialogMessage = getString(R.string.about_message)
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(dialogTitle)
+        builder.setMessage(dialogMessage)
+        builder.create().show()
     }
+
 }
